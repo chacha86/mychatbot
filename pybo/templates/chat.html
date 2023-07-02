@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<script>
+    function fetchPost(url, data) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+    }
+
+    function fetchGet(url, data) {
+        
+        return fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+            .then(response => {
+                console.log(response)
+                response.json()
+            })
+    }
+
+
+    let result = fetchGet("http://127.0.0.1:8099/chat/list", )
+
+    console.log(result)
+
+
+
+</script>
+<body>
+<div id="wrap" class="flex">
+    <div class="left">
+        <ul class="p-list">
+            <li class="flex active">
+                <div class="circle"></div>
+                <div class="user">사용자1</div>
+            </li>
+        </ul>
+        <div class="profile flex">
+            <div class="flex first">
+                <div class="circle"></div>
+                <div class="my-name">
+                    <strong>사용자</strong>
+                    <p>login-ID</p>
+                </div>
+            </div>
+            <div class="icon flex">
+                <div class="icon1"></div>
+                <div class="icon2"></div>
+                <div class="icon3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <ul id="chat" class="chat">
+            {% for chat in chat_list %}
+            <li class="chat-list1 flex">
+                <div class="pro-img"></div>
+                <div class="pro-text">
+                    <p class="name">사용자 <span>2023.06.04.오후 8:07</span></p>
+                    <p class="chatting">
+                        {{chat.body}}
+                    </p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="chat-box">
+            <form action="/chat/create" method="post">
+                {{ form.csrf_token }}
+                <!-- 오류표시 Start -->
+                {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for field, errors in form.errors.items() %}
+                    <strong>{{ form[field].label }}</strong>
+                    <ul>
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <input type="text" name="body"/>
+                <input type="submit" value="전송"/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    let chatBox = document.getElementById("chat");
+    console.log(chatBox.scrollHeight);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
+
+</script>
+{% endblock %}
